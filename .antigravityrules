@@ -1,0 +1,66 @@
+# Algorithm Arena — Agent Rules (Antigravity / Gemini)
+
+## MANDATORY: Read Before Any Action
+
+**STOP. Before doing ANYTHING in this project, read these files in order:**
+
+1. `/memory-bank/activeContext.md` — What is currently being worked on.
+2. `/memory-bank/progress.md` — What is done, what is in-progress, what is next.
+3. `/memory-bank/decisions.md` — Resolved design questions (do NOT re-litigate these).
+4. `PRD.md` — The full project specification (read relevant sections as needed).
+
+**If these files do not exist yet, read `PRD.md` in full before proceeding.**
+
+## Project: Algorithm Arena
+
+A web app comparing 5 classical ML models (Logistic Regression, KNN, SVM, Decision Tree, Naive Bayes) on the same tabular dataset. The purpose is to visualize trade-offs (speed vs. accuracy vs. model size), not just show one accuracy number.
+
+## Division of Labor — STRICT RULES
+
+### What You MUST NOT Do (Unless Explicitly Asked)
+
+- ❌ **Do NOT write backend code** (FastAPI server, routers, middleware, error handling).
+- ❌ **Do NOT write ML pipeline code** (preprocessing, training, evaluation, serialization).
+- ❌ **Do NOT write API logic** (Pydantic schemas, service layers, prediction handlers).
+- ❌ **Do NOT edit memory-bank files** — that is Hermes Agent's job exclusively.
+- ❌ **Do NOT make architectural decisions autonomously** — check `decisions.md` or ask Rahul.
+- ❌ **Do NOT resolve Open Questions from PRD Section 14 by guessing** — check `decisions.md` first, then ask Rahul if unresolved.
+
+### What You MAY Do (Only When Rahul Asks)
+
+- ✅ Generate **frontend code** (HTML, CSS, JavaScript) when requested.
+- ✅ **Debug** backend/ML/API code when Rahul asks for help with a specific issue.
+- ✅ **Review code** and suggest improvements when asked.
+- ✅ **Explain** sklearn API behavior, error messages, or concepts when asked.
+- ✅ **Suggest** hyperparameters, deployment strategies, or refactors when asked.
+
+### What You SHOULD Do Proactively
+
+- 📖 Read the memory bank at the start of every new session.
+- 🔗 Reference PRD section numbers when discussing requirements (e.g., "Per PRD Section 9.2...").
+- 💡 After completing work, remind Rahul to update the memory bank (tell Hermes).
+- ⚠️ Warn Rahul if you notice something that contradicts the PRD or a recorded decision.
+
+## Owner
+
+**Rahul** is the sole human owner. He writes all backend, ML pipeline, and API code himself.
+Agents assist with frontend scaffolding (on request) and debugging/review (on request).
+
+## Key Technical Facts
+
+- **Backend:** FastAPI (Python 3.11+), Uvicorn, Pydantic v2
+- **ML:** scikit-learn ≥1.3, pandas, numpy, joblib
+- **Frontend:** Vanilla HTML/CSS/JS (check `decisions.md` — this may change)
+- **API Prefix:** `/api/v1`
+- **Key Endpoints:** `POST /predict`, `GET /metrics`, `GET /form-schema`, `GET /health`
+- **Serialization:** joblib `.pkl` files in `model_training/artifacts/`
+- **CRITICAL RULE:** Never refit transformers (scaler/encoder) on live input at inference time.
+
+## Milestones (Check progress.md for Current State)
+
+1. Data Pipeline
+2. Model Training & Serialization
+3. Backend API
+4. Frontend
+5. Deployment
+6. LinkedIn Write-Up Assets
