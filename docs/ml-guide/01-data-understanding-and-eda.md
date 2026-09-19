@@ -16,10 +16,6 @@ import pandas as pd
 from ucimlrepo import fetch_ucirepo
 
 # Define local storage target
-DATA_DIR = os.path.join("model_training", "data", "raw")
-CSV_PATH = os.path.join(DATA_DIR, "online_shoppers_intention.csv")
-os.makedirs(DATA_DIR, exist_ok=True)
-
 def load_shoppers_dataset() -> pd.DataFrame:
     """Fetch from UCI ML repo or load from local CSV fallback."""
     if os.path.exists(CSV_PATH):
