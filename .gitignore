@@ -35,3 +35,6 @@ model_training/data/
 
 # Logs
 *.log
+
+memory-bank/
+/memory-bank/

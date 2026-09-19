@@ -48,7 +48,10 @@
   - [ ] 6.4 Final memory bank update
 
 ## Completed Items
-_None yet._
+- ✅ PRD.md written (v1.0.0, 1683 lines)
+- ✅ Memory bank bootstrapped (all 4 files: activeContext, progress, decisions, projectbrief)
+- ✅ Dataset confirmed: Online Shoppers Purchasing Intention (UCI ID 468) — recorded in decisions.md
+- ✅ `docs/ml-guide/00-workflow-and-git-map.md` created (branch strategy, commit conventions, guide TOC)
 
 ## Key Dates
-- **2026-09-19:** Project initialized. PRD written. Memory bank bootstrapped.
+- **2026-09-19:** Project initialized. PRD written. Memory bank bootstrapped. Dataset confirmed. ML guide index created. Git initialized with initial commit.
