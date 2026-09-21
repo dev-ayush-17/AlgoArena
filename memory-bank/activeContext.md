@@ -1,30 +1,43 @@
 # Active Context
 
 ## Current Focus
-Pre-implementation. PRD is complete (v1.0.0). Memory bank is bootstrapped. Dataset confirmed. No implementation code exists yet.
+
+Milestone 2 wrap-up and Milestone 3 preparation. The ML training pipeline is largely complete: all transformers (scaler, encoder) are serialized, 4 of 5 model `.pkl` files exist in `model_training/artifacts/` (logistic_regression, knn, svm, naive_bayes), and `metrics.json` + `feature_config.json` are present. **One gap: `decision_tree.pkl` is missing** — the git log claims "Implemented all ML algorithms" but the Decision Tree artifact was never serialized to disk (or was removed). This needs to be resolved before M2 can be marked fully complete.
+
+The backend implementation guide (`/docs/backend-guide/`) has not been generated yet — it needs to be created before M3 work begins. The `/backend/` directory does not exist yet; no backend code has been written.
 
 ## What Exists
-- `PRD.md` — full specification (1683 lines)
+
+- `PRD.md` — full specification (v1.0.0, 1683 lines)
 - `memory-bank/` — all 4 files (activeContext, progress, decisions, projectbrief)
-- `docs/ml-guide/00-workflow-and-git-map.md` — ML guide index & git workflow map (branch strategy, commit conventions, guide TOC)
-- `CLAUDE.md` — agent rules
-- Git: 1 initial commit (`702b28d chore: initial commit`), `docs/` untracked
+- `model_training/artifacts/` — populated:
+  - `scaler.pkl`, `encoder.pkl`, `feature_config.json` (M1 output)
+  - `logistic_regression.pkl`, `knn.pkl`, `svm.pkl`, `naive_bayes.pkl` (4 of 5 models)
+  - `metrics.json` (evaluation metrics for all models)
+  - ❌ `decision_tree.pkl` — MISSING
+- `docs/ml-guide/` — 10 guide files (00–09): workflow map, data understanding, preprocessing, visualization, per-model guides (LR, KNN, SVM, DT, NB), model comparison & serialization
+- `docs/backend-guide/` — **does NOT exist yet** (needs to be generated)
+- `backend/` — **does NOT exist** (M3 not started)
+- Git: branches `backend`, `frontend`, `main`, `ml` exist. Recent commits show ML work merged via PR from `dev-ayush-17/ml`.
 
 ## What Does NOT Exist Yet
-- `model_training/` directory — no data, no preprocessing.py, no train.py, no artifacts
-- `backend/`, `frontend/` directories
-- `requirements.txt`, `.gitignore`
-- Any dataset, notebook, or serialized model
+
+- `decision_tree.pkl` in `model_training/artifacts/`
+- `backend/` directory and all backend code
+- `docs/backend-guide/` directory and backend implementation guide
+- `frontend/` directory (M4 not started)
 
 ## Immediate Next Steps
-1. Download the Online Shoppers Purchasing Intention dataset (UCI ID 468) into `model_training/data/raw/`.
-2. Create EDA notebook (`model_training/notebooks/01_eda.ipynb`) — inspect shape, dtypes, distributions, missing values, correlations.
-3. Implement `model_training/preprocessing.py` — cleaning, encoding, scaling, splitting per PRD Section 7.
-4. Resolve OQ2 (encoding strategy) before implementing the encoder — default is OneHotEncoder for all models.
-5. Create the remaining ML guide docs (01–09) as implementation progresses, per the index in `00-workflow-and-git-map.md`.
+
+1. **Resolve missing `decision_tree.pkl`:** Re-run Decision Tree training and serialization, or confirm whether the existing artifacts are sufficient (check if `metrics.json` includes decision_tree metrics — if so, the model may just need to be re-serialized).
+2. **Generate `/docs/backend-guide/`** — backend implementation guide following the pattern of `/docs/ml-guide/` (index + per-topic guides: project setup, model loading, predict endpoint, metrics endpoint, form-schema endpoint, health endpoint, input validation, CORS).
+3. **Begin M3 — Backend implementation:** Create `backend/` directory, start with `main.py` (FastAPI app, startup event to load artifacts), then routers, schemas, services, and utils per PRD Section 6 folder structure. Work on branch `backend/feature-project-setup`.
 
 ## Blockers
-None. Dataset is confirmed. OQ2–OQ10 still open — check `decisions.md` before resolving any.
+
+- **Missing `decision_tree.pkl`:** M2 cannot be marked fully complete until all 5 model artifacts are on disk. Need to either re-serialize the Decision Tree or confirm the existing 4 models + metrics.json is acceptable.
+- **No backend-guide docs:** M3 work should follow a written guide; the guide needs to be created first (or M3 can begin with the guide being written in parallel).
 
 ## Session Notes
-- **2026-09-19:** PRD created (v1.0.0). Memory-bank bootstrapped with all 4 files. Dataset confirmed as **Online Shoppers Purchasing Intention** (UCI ID 468). `docs/ml-guide/00-workflow-and-git-map.md` created with branch strategy, commit conventions, and guide TOC. Git initialized with one initial commit. No implementation code written yet.
+
+- **2026-09-21:** Inspected actual disk state. Found M1 complete and M2 nearly complete (4/5 models + all artifacts). Memory bank was stale — claimed "pre-implementation, no code exists." Git log reveals ML work was contributed by `dev-ayush-17` via PR #1, merged into `main`. Decision Tree `.pkl` is missing from artifacts despite commit message claiming all algorithms implemented. Memory bank updated to reflect real state.

@@ -2,20 +2,25 @@
 
 ## Milestones
 
-- 📋 **M1: Data Pipeline** — Not started (dataset confirmed ✅ — ready to begin)
-  - [ ] 1.1 Download and inspect dataset
-  - [ ] 1.2 Implement preprocessing.py
-  - [ ] 1.3 Verify no data leakage
-  - [ ] 1.4 Commit and update memory bank
+- ✅ **M1: Data Pipeline** — Complete
+  - [x] 1.1 Download and inspect dataset — Online Shoppers Purchasing Intention (UCI ID 468) loaded
+  - [x] 1.2 Implement preprocessing.py — scaler.pkl, encoder.pkl, feature_config.json produced
+  - [x] 1.3 Verify no data leakage — transformers fitted on train set only
+  - [x] 1.4 Commit and update memory bank — merged via PR #1 from dev-ayush-17/ml
 
-- 📋 **M2: Model Training & Serialization** — Not started
-  - [ ] 2.1 Implement train.py
-  - [ ] 2.2 Evaluation (metrics.json)
-  - [ ] 2.3 Serialization (5 .pkl model files)
-  - [ ] 2.4 Sanity check (load + predict on sample row)
-  - [ ] 2.5 Commit and update memory bank
+- 🔄 **M2: Model Training & Serialization** — Nearly complete (1 gap)
+  - [x] 2.1 Implement train.py — all 5 models trained (per git log: "Implememnted all ML algorithms")
+  - [x] 2.2 Evaluation (metrics.json) — metrics.json exists with all model metrics
+  - [x] 2.3 Serialization (5 .pkl model files) — 4 of 5 serialized:
+    - [x] logistic_regression.pkl
+    - [x] knn.pkl
+    - [x] svm.pkl
+    - [x] naive_bayes.pkl
+    - [ ] decision_tree.pkl — **MISSING, needs resolution**
+  - [ ] 2.4 Sanity check (load + predict on sample row) — not verified on disk
+  - [ ] 2.5 Commit and update memory bank — pending
 
-- 📋 **M3: Backend API** — Not started
+- 📋 **M3: Backend API** — Not started (ready to begin)
   - [ ] 3.1 Project setup (FastAPI app, requirements.txt)
   - [ ] 3.2 Model loading at startup
   - [ ] 3.3 POST /api/v1/predict
@@ -48,10 +53,15 @@
   - [ ] 6.4 Final memory bank update
 
 ## Completed Items
+
 - ✅ PRD.md written (v1.0.0, 1683 lines)
 - ✅ Memory bank bootstrapped (all 4 files: activeContext, progress, decisions, projectbrief)
 - ✅ Dataset confirmed: Online Shoppers Purchasing Intention (UCI ID 468) — recorded in decisions.md
-- ✅ `docs/ml-guide/00-workflow-and-git-map.md` created (branch strategy, commit conventions, guide TOC)
+- ✅ `docs/ml-guide/` created (10 guide files: 00–09)
+- ✅ M1 complete: preprocessing.py → scaler.pkl, encoder.pkl, feature_config.json
+- ✅ M2 nearly complete: 4/5 models serialized + metrics.json (decision_tree.pkl missing)
 
 ## Key Dates
-- **2026-09-19:** Project initialized. PRD written. Memory bank bootstrapped. Dataset confirmed. ML guide index created. Git initialized with initial commit.
+
+- **2026-09-19:** Project initialized. PRD written. Memory bank bootstrapped. Dataset confirmed. ML guide index created. Git initialized.
+- **2026-09-21:** ML pipeline merged via PR #1 from dev-ayush-17/ml. Artifacts on disk: 4/5 models + transformers + metrics.json. Decision Tree .pkl missing. Memory bank updated to reflect real state.
