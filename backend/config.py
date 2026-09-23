@@ -10,10 +10,26 @@ class Settings(BaseSettings):
     VERSION: str = "1.0"
     API_V1_STR: str = "/api/v1"
 
+    # Deployment Environment
+    ENVIRONMENT: str = os.getenv("ENVIRONMENT", "development")
+    PORT: int = int(os.getenv("PORT", 8000))
+
+     # CORS Configuration
+    ALLOWED_ORIGINS: list = os.getenv(
+        "ALLOWED_ORIGINS", 
+        "*"
+    ).split(",")
+
     # Path Resolution
     BACKEND_DIR: Path = Path(__file__).resolve().parent
     PROJECT_ROOT: Path = BACKEND_DIR.parent
-    ARTIFACTS_DIR: Path = PROJECT_ROOT / "model_training" / "artifacts"
+
+    # env
+    env_artifacts = os.getenv("ARTIFACTS_DIR")
+    if env_artifacts:
+        ARTIFACTS_DIR: Path = Path(env_artifacts).resolve()
+    else:
+        ARTIFACTS_DIR: Path = PROJECT_ROOT / "model_training" / "artifacts"
 
     # Artifacts Filenames
     SCALER_FILENAME: str = "scaler.pkl"

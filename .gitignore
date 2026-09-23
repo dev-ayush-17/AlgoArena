@@ -2,6 +2,8 @@
 __pycache__/
 *.pyc
 *.pyo
+*.py[cod]
+*$py.class
 *.egg-info/
 dist/
 build/
@@ -10,6 +12,7 @@ build/
 venv/
 .venv/
 env/
+.env
 
 # IDE
 .vscode/
@@ -38,3 +41,12 @@ model_training/data/
 
 memory-bank/
 /memory-bank/
+
+# System & IDE files
+.DS_Store
+.vscode/
+.idea/
+
+# DO NOT IGNORE MODEL ARTIFACTS
+!model_training/artifacts/*.pkl
+!model_training/artifacts/*.json

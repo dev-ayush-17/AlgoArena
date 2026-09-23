@@ -1,9 +1,15 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from backend.config import settings
-from backend.routers import health, predict
+from backend.routers import health, predict, metrics, schema
 from contextlib import asynccontextmanager
 from backend.services.model_service import model_container
+from fastapi.exceptions import RequestValidationError
+from backend.routers.error_handlers import (
+    MLValidationException, ModelInferenceException,
+    validation_exception_handler, ml_validation_exception_handler,
+    model_inference_exception_handler
+)
 
 
 @asynccontextmanager
@@ -17,39 +23,31 @@ async def lifespan(app: FastAPI):
     yield
     print("[SHUTDOWN] Cleaning up resources...")
 
+
 app = FastAPI(
     title=settings.PROJECT_NAME,
     version=settings.VERSION,
+    openapi_url=f"{settings.API_V1_STR}/openapi.json",
     lifespan=lifespan
-)
-
-app.add_middleware(
-    CORSMiddleware,
-    allow_credentials=["*"],
-    allow_headers=["*"],
-    allow_origins=["*"],
-    allow_methods=["*"]
-)
-
-app.include_router(health.router, prefix=settings.API_V1_STR)
-app.include_router(predict.router, prefix=settings.API_V1_STR)
-
-app = FastAPI(
-    title=settings.PROJECT_NAME,
-    version=settings.VERSION,
-    openapi_url=f"{settings.API_V1_STR}/openapi.json"
 )
 
 # Configure CORS for frontend access
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],
+    allow_origins=settings.ALLOWED_ORIGINS,
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"]
 )
 
 app.include_router(health.router, prefix=settings.API_V1_STR)
+app.include_router(predict.router, prefix=settings.API_V1_STR)
+app.include_router(metrics.router, prefix=settings.API_V1_STR)
+app.include_router(schema.router, prefix=settings.API_V1_STR)
+
+app.add_exception_handler(RequestValidationError, validation_exception_handler)
+app.add_exception_handler(MLValidationException, ml_validation_exception_handler)
+app.add_exception_handler(ModelInferenceException, model_inference_exception_handler)
 
 @app.get("/")
 def root():
