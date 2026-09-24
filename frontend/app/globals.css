@@ -1,0 +1,30 @@
+@import url('https://fonts.googleapis.com/css2?family=Cabinet+Grotesk:wght@700;800;900&family=JetBrains+Mono:ital,wght@0,400;0,500;0,700;1,400&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    --font-display: 'Cabinet Grotesk', sans-serif;
+    --font-body: 'Plus Jakarta Sans', sans-serif;
+    --font-mono: 'JetBrains Mono', monospace;
+  }
+
+  body {
+    @apply bg-paper text-slate-100 font-body antialiased min-h-screen selection:bg-cyan-500/20 selection:text-cyan-200;
+  }
+
+  h1, h2, h3, h4, h5, h6 {
+    @apply font-display font-extrabold tracking-tight not-italic text-slate-100;
+  }
+
+  code, pre, .mono {
+    @apply font-mono [font-variant-numeric:tabular-nums];
+  }
+}
+
+/* Spinner Animation */
+.spinner {
+  @apply w-6 h-6 border-2 border-slate-700 border-t-slate-200 rounded-full animate-spin mx-auto my-4;
+}
