@@ -2,7 +2,6 @@ import numpy as np
 import pandas as pd
 import os, joblib, logging
 from typing import Dict, Any, List, Optional
-from backend.services.model_service import model_container
 from backend.services.preprocessing_services import transform_features_for_inference
 from backend.schemas.predict import (
     PredictionRequest, PredictionResponse, SingleModelPrediction, ConsensusSummary
@@ -10,7 +9,7 @@ from backend.schemas.predict import (
 from backend.utils.timing import measure_inference_time_ms
 from backend.config import settings
 
-logger = logging.getLogger()
+logger = logging.getLogger("backend.services.model_service")
 
 DISPLAY_NAMES = {
     "logistic_regression": "Logistic Regression",
@@ -30,23 +29,27 @@ def run_prediction_pipeline(request: PredictionRequest) -> PredictionResponse:
     Orchestrates input feature transformation, multi-model execution,
     latency benchmarking, and consensus aggregation.
     """
-    x_processed = transform_features_for_inference(request.features)
+    x_processed = transform_features_for_inference(
+        request.features, 
+        scaler=model_container.scaler, 
+        encoder=model_container.encoder
+    )
     single_predictions: List[SingleModelPrediction] = []
-    raw_preds = List[int] = []
+    raw_preds: List[int] = []
     failed_models: List[str] = []
 
     for model_key, model in model_container.models.items():
-        display_name = DISPLAY_NAMES.get(model_key, model_key.replace("_", "").title())
+        display_name = DISPLAY_NAMES.get(model_key, model_key.replace("_", " ").title())
 
         try:
-            (prediction_arr), latency_ms = measure_inference_time_ms(model.predict, X_processed)
+            prediction_arr, latency_ms = measure_inference_time_ms(model.predict, x_processed)
             pred_int = int(prediction_arr[0])
             raw_preds.append(pred_int)
 
             confidence = 0.5
             if hasattr(model, "predict_proba"):
                 try:
-                    proba_arr = model.predict_proba(X_processed)[0]
+                    proba_arr = model.predict_proba(x_processed)[0]
                     confidence = float(np.max(proba_arr))
                 except Exception:
                     confidence = 0.5
@@ -97,7 +100,7 @@ def run_prediction_pipeline(request: PredictionRequest) -> PredictionResponse:
     if failed_models:
         response_dict["failed_models"] = failed_models
 
-    return response_dict
+    return PredictionResponse(**response_dict)
 
 class ModelContainer:
     """
@@ -115,10 +118,10 @@ class ModelContainer:
         Loads fitted transformers and models in memory
         """
         artifacts_dir = settings.ARTIFACTS_DIR
-        logger.info(f"Loading ML artifacts.....")
+        logger.info(f"Loading ML artifacts from {artifacts_dir}...")
 
         if not artifacts_dir.exists():
-            raise FileNotFoundError(f"Artifacts directory missing")
+            raise FileNotFoundError(f"Artifacts directory missing at {artifacts_dir}")
 
         scaler_path = artifacts_dir / settings.SCALER_FILENAME
         encoder_path = artifacts_dir / settings.ENCODER_FILENAME
@@ -134,21 +137,21 @@ class ModelContainer:
         for model_key, filename in settings.MODEL_FILES.items():
             model_path = artifacts_dir / filename
             if not model_path.exists():
-                logger.warning(f"Model artifact missing for {model_key}: {model_path}. Skipping.....")
+                logger.warning(f"Model artifact missing for {model_key}: {model_path}. Skipping...")
                 continue
 
             try:
                 model = joblib.load(model_path)
                 self.models[model_key] = model
                 loaded_count += 1
-                logger.info(f"Loaded Model...")
+                logger.info(f"Loaded model '{model_key}'")
             except Exception as e:
-                logger.error(f"Failed to unpickle model {model_key}")
+                logger.error(f"Failed to unpickle model {model_key}: {e}")
 
         if loaded_count == 0:
             raise RuntimeError("No model artifacts were successfully loaded into memory")
 
         self.is_loaded = True
-        logger.info(f"Artifact initialisarion compelete. Total models read = {loaded_count}")
+        logger.info(f"Artifact initialization complete. Total models read = {loaded_count}")
 
 model_container = ModelContainer()

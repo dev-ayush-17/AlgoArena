@@ -49,12 +49,22 @@ app.add_exception_handler(RequestValidationError, validation_exception_handler)
 app.add_exception_handler(MLValidationException, ml_validation_exception_handler)
 app.add_exception_handler(ModelInferenceException, model_inference_exception_handler)
 
-@app.get("/")
-def root():
+@app.get("/api")
+def root_api():
     return {
         "message": "Welcome to Algorithm Arena API. Visit /docs for OpenAPI specifications"
     }
 
+from fastapi.staticfiles import StaticFiles
+from pathlib import Path
+
+frontend_dir = Path(__file__).parent.parent / "frontend"
+if frontend_dir.exists():
+    out_dir = frontend_dir / "out"
+    target_dir = out_dir if out_dir.exists() and (out_dir / "index.html").exists() else frontend_dir
+    if (target_dir / "index.html").exists():
+        app.mount("/", StaticFiles(directory=str(target_dir), html=True), name="frontend")
+
 if __name__ == "__main__":
     import uvicorn
-    uvicorn.run("backend.main:app", host="127.0.0.1", port="8000", reload=True)
+    uvicorn.run("backend.main:app", host="127.0.0.1", port=8000, reload=True)

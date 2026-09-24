@@ -1,3 +1,5 @@
+import copy
+
 def test_missing_features_payload_returns_422(client):
     # Missing required 'features' object
     response = client.post("/api/v1/predict", json={})
@@ -19,7 +21,7 @@ def test_invalid_type_field_returns_422(client):
 
 def test_out_of_range_bounce_rates_returns_400(client, valid_shopper_payload):
     # BounceRates > 1.0 violates physical ratio bounds
-    payload = valid_shopper_payload.copy()
+    payload = copy.deepcopy(valid_shopper_payload)
     payload["features"]["BounceRates"] = 5.0
     
     response = client.post("/api/v1/predict", json=payload)
@@ -30,7 +32,7 @@ def test_out_of_range_bounce_rates_returns_400(client, valid_shopper_payload):
 
 def test_invalid_month_category_returns_422(client, valid_shopper_payload):
     # Invalid Month category 'December' (dataset expects 'Dec')
-    payload = valid_shopper_payload.copy()
+    payload = copy.deepcopy(valid_shopper_payload)
     payload["features"]["Month"] = "December"
     
     response = client.post("/api/v1/predict", json=payload)

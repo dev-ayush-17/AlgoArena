@@ -6,7 +6,7 @@ from pydantic import ValidationError
 
 logger = logging.getLogger("backend.error_handlers")
 
-class MLValidatorException(Exception):
+class MLValidationException(Exception):
     """Raised when feature inputs break physical/domain boundaries."""
     def __init__(self, message: str, field: str = None):
         self.message = message

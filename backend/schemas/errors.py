@@ -10,4 +10,4 @@ class ErrorResponse(BaseModel):
     error:str
     message:str
     details: Optional[List[APIErrorDetail]] = None
-    failed_models = Optional[List[str]] = None
+    failed_models: Optional[List[str]] = None

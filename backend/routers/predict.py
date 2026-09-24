@@ -1,6 +1,7 @@
 from fastapi import APIRouter, HTTPException, status
 from backend.schemas.predict import PredictionResponse, PredictionRequest
 from backend.services.model_service import run_prediction_pipeline, model_container
+from backend.routers.error_handlers import MLValidationException, ModelInferenceException
 
 router = APIRouter(tags=["Prediction"])
 
@@ -21,6 +22,8 @@ def predict_shopper_intention(request: PredictionRequest):
     try:
         response = run_prediction_pipeline(request)
         return response
+    except (MLValidationException, ModelInferenceException):
+        raise
     except Exception as e:
         raise HTTPException(
             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,

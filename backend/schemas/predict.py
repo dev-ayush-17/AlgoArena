@@ -9,10 +9,10 @@ class FeatureInput(BaseModel):
     Informational_Duration: float = Field(default=0.0, ge=0.0, le=5000.0, description="Time spent on informational pages (sec)")
     ProductRelated: int = Field(default=1, ge=0, le=1000, description="Number of product-related pages visited")
     ProductRelated_Duration: float = Field(default=10.0, ge=0.0, le=70000.0, description="Time spent on product pages (sec)")
-    BounceRates: float = Field(default=0.0, ge=0.0, le=1.0, description="Percentage of visitors leaving immediately")
-    ExitRates: float = Field(default=0.02, ge=0.0, le=1.0, description="Percentage of pageviews that were last in session")
+    BounceRates: float = Field(default=0.0, ge=0.0, description="Percentage of visitors leaving immediately")
+    ExitRates: float = Field(default=0.02, ge=0.0, description="Percentage of pageviews that were last in session")
     PageValues: float = Field(default=0.0, ge=0.0, le=400.0, description="Google Analytics page value index")
-    SpecialDay: float = Field(default=0.0, ge=0.0, le=1.0, description="Closeness of site visit to a special day (0.0 to 1.0)")
+    SpecialDay: float = Field(default=0.0, ge=0.0, description="Closeness of site visit to a special day (0.0 to 1.0)")
     
     # Categorical Features (7)
     Month: str = Field(default="May", description="Month of session (Feb, Mar, May, June, Jul, Aug, Sep, Oct, Nov, Dec)")
@@ -42,7 +42,11 @@ class FeatureInput(BaseModel):
 class PredictionRequest(BaseModel):
     features: FeatureInput
 
+from pydantic import BaseModel, Field, field_validator, ConfigDict
+
 class SingleModelPrediction(BaseModel):
+    model_config = ConfigDict(protected_namespaces=())
+
     model_name: str
     model_key: str
     prediction: int

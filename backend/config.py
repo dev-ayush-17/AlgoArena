@@ -2,7 +2,12 @@
 
 import os
 from pathlib import Path
-from pydantic_settings import BaseSettings
+from pydantic_settings import BaseSettings, SettingsConfigDict
+
+_BACKEND_DIR = Path(__file__).resolve().parent
+_PROJECT_ROOT = _BACKEND_DIR.parent
+_ENV_ARTIFACTS = os.getenv("ARTIFACTS_DIR")
+_DEFAULT_ARTIFACTS_DIR = Path(_ENV_ARTIFACTS).resolve() if _ENV_ARTIFACTS else (_PROJECT_ROOT / "model_training" / "artifacts")
 
 class Settings(BaseSettings):
     # App information
@@ -12,24 +17,17 @@ class Settings(BaseSettings):
 
     # Deployment Environment
     ENVIRONMENT: str = os.getenv("ENVIRONMENT", "development")
-    PORT: int = int(os.getenv("PORT", 8000))
+    PORT: int = int(os.getenv("PORT", "8000"))
 
-     # CORS Configuration
-    ALLOWED_ORIGINS: list = os.getenv(
-        "ALLOWED_ORIGINS", 
-        "*"
-    ).split(",")
+    # CORS Configuration
+    ALLOWED_ORIGINS: list[str] = [
+        origin.strip() for origin in os.getenv("ALLOWED_ORIGINS", "*").split(",") if origin.strip()
+    ]
 
     # Path Resolution
-    BACKEND_DIR: Path = Path(__file__).resolve().parent
-    PROJECT_ROOT: Path = BACKEND_DIR.parent
-
-    # env
-    env_artifacts = os.getenv("ARTIFACTS_DIR")
-    if env_artifacts:
-        ARTIFACTS_DIR: Path = Path(env_artifacts).resolve()
-    else:
-        ARTIFACTS_DIR: Path = PROJECT_ROOT / "model_training" / "artifacts"
+    BACKEND_DIR: Path = _BACKEND_DIR
+    PROJECT_ROOT: Path = _PROJECT_ROOT
+    ARTIFACTS_DIR: Path = _DEFAULT_ARTIFACTS_DIR
 
     # Artifacts Filenames
     SCALER_FILENAME: str = "scaler.pkl"
@@ -42,10 +40,10 @@ class Settings(BaseSettings):
         "logistic_regression": "logistic_regression.pkl",
         "knn": "knn.pkl",
         "svm": "svm.pkl",
+        "decision_tree": "decision_tree.pkl",
         "naive_bayes": "naive_bayes.pkl"
     }
 
-    class Config:
-        case_sensitive = True
+    model_config = SettingsConfigDict(case_sensitive=True)
 
 settings = Settings()

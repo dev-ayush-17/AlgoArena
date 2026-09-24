@@ -50,7 +50,7 @@ def get_from_schema():
 
     config_path = settings.ARTIFACTS_DIR / settings.FEATURE_CONFIG_FILENAME
 
-    if config_path.exist():
+    if config_path.exists():
         try:
             with open(config_path, "r") as f:
                 content = json.load(f)

@@ -1,8 +1,6 @@
 import pandas as pd
 import numpy as np
-from typing import Tuple
-from backend.services.model_service import model_container
-from backend.schemas.predict import FeatureInput
+from typing import Tuple, Optional, Any
 from backend.schemas.predict import FeatureInput
 from backend.routers.error_handlers import MLValidationException
 
@@ -34,18 +32,19 @@ def validate_domain_boundaries(features: FeatureInput) -> None:
             field="SpecialDay"
         )
 
-def transform_features_for_inference(feature_input: FeatureInput) -> pd.DataFrame:
+def transform_features_for_inference(feature_input: FeatureInput, scaler: Optional[Any] = None, encoder: Optional[Any] = None) -> pd.DataFrame:
     """
     Transforms raw Pydantic FeatureInput into the processed DataFrame feature matrix
     expected by serialized scikit-learn models. Reuses saved scaler and encoder.
     """
-    if not model_container.is_loaded:
-        raise RuntimeError("Model Container is not initialized")
+    if scaler is None or encoder is None:
+        from backend.services.model_service import model_container
+        if not model_container.is_loaded:
+            raise RuntimeError("Model Container is not initialized")
+        scaler = scaler or model_container.scaler
+        encoder = encoder or model_container.encoder
 
     validate_domain_boundaries(feature_input)
-
-    scaler = model_container.scaler
-    encoder = model_container.encoder
 
     raw_dict = feature_input.model_dump()
     raw_df = pd.DataFrame([raw_dict])
@@ -61,4 +60,3 @@ def transform_features_for_inference(feature_input: FeatureInput) -> pd.DataFram
     x_processed[NUM_COLS] = scaler.transform(x_raw[NUM_COLS])
 
     return x_processed
-

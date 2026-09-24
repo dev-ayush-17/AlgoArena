@@ -1,7 +1,9 @@
-from pydantic import BaseModel
+from pydantic import BaseModel, ConfigDict
 from typing import Dict, List, Any, Optional
 
 class ModelMetricDetails(BaseModel):
+    model_config = ConfigDict(protected_namespaces=())
+
     display_name: str
     accuracy: float
     precision: float
