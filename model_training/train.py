@@ -7,6 +7,7 @@ from preprocessing import load_shoppers_data, preprocess_and_split
 from sklearn.metrics import classification_report, accuracy_score, precision_score, recall_score, f1_score, roc_auc_score
 from sklearn.neighbors import KNeighborsClassifier
 from sklearn.svm import SVC
+from sklearn.tree import DecisionTreeClassifier
 from sklearn.naive_bayes import GaussianNB
 
 
@@ -96,6 +97,9 @@ if __name__ == "__main__":
         (SVC(kernel='rbf', C=1.0, probability=True, class_weight='balanced', random_state=42), 
          "svm", "Support Vector Machine"),
          
+        (DecisionTreeClassifier(max_depth=5, class_weight='balanced', random_state=42),
+         "decision_tree", "Decision Tree"),
+
         (GaussianNB(var_smoothing=1e-9), 
          "naive_bayes", "Naive Bayes")
     ]

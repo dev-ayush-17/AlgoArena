@@ -104,6 +104,6 @@ def export_features():
     }
 
     with open(feature_config_path, "w") as f:
-        json.dump(feature_config_path, f, indent=2)
+        json.dump(feature_config, f, indent=2)
 
-    print(f"Successfully generated feature comnfig.json at: {feature_config_path}")
+    print(f"Successfully generated feature_config.json at: {feature_config_path}")
