@@ -1,7 +1,5 @@
-# Python
+# Python & Virtual Environments
 __pycache__/
-*.pyc
-*.pyo
 *.py[cod]
 *$py.class
 *.egg-info/
@@ -12,41 +10,40 @@ build/
 venv/
 .venv/
 env/
-.env
+backend/venv/
+.pytest_cache/
 
-# IDE
+# Node & Next.js
+node_modules/
+frontend/node_modules/
+.next/
+frontend/.next/
+frontend/out/
+
+# IDE & OS
 .vscode/
 .idea/
 *.swp
 *.swo
-*~
-
-# OS
 .DS_Store
 Thumbs.db
 
-# Jupyter
-.ipynb_checkpoints/
-
-# Data & Models
-model_training/data/
-*.pkl
-
-# Environment
+# Environment Variables
 .env
 .env.local
+.env.development.local
+.env.test.local
 
-# Logs
-*.log
+# Internal / Agent artifacts
+.agents/
+geminiignore
+skills-lock.json
 
+# Data & Excluded Docs
+model_training/data/
+docs/
 memory-bank/
-/memory-bank/
 
-# System & IDE files
-.DS_Store
-.vscode/
-.idea/
-
-# DO NOT IGNORE MODEL ARTIFACTS
+# Explicitly track ML Model Artifacts
 !model_training/artifacts/*.pkl
 !model_training/artifacts/*.json
