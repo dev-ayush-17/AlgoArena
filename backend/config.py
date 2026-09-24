@@ -1,8 +1,11 @@
-"""`config.py` centralizes paths to serialized model artifacts (`/model_training/artifacts/`) and application settings. Hardcoding absolute paths across router files creates fragile code that breaks on deployment or across different developer machines."""
+"""`config.py` centralizes paths to serialized model artifacts (`/model_training/artifacts/`) and application settings."""
 
 import os
+import json
 from pathlib import Path
+from typing import Union
 from pydantic_settings import BaseSettings, SettingsConfigDict
+from pydantic import field_validator
 
 _BACKEND_DIR = Path(__file__).resolve().parent
 _PROJECT_ROOT = _BACKEND_DIR.parent
@@ -16,13 +19,27 @@ class Settings(BaseSettings):
     API_V1_STR: str = "/api/v1"
 
     # Deployment Environment
-    ENVIRONMENT: str = os.getenv("ENVIRONMENT", "development")
-    PORT: int = int(os.getenv("PORT", "8000"))
+    ENVIRONMENT: str = "development"
+    PORT: int = 8000
 
     # CORS Configuration
-    ALLOWED_ORIGINS: list[str] = [
-        origin.strip() for origin in os.getenv("ALLOWED_ORIGINS", "*").split(",") if origin.strip()
-    ]
+    ALLOWED_ORIGINS: Union[str, list[str]] = ["*"]
+
+    @field_validator("ALLOWED_ORIGINS", mode="before")
+    @classmethod
+    def parse_allowed_origins(cls, v):
+        if isinstance(v, str):
+            if v.startswith("[") and v.endswith("]"):
+                try:
+                    parsed = json.loads(v)
+                    if isinstance(parsed, list):
+                        return parsed
+                except Exception:
+                    pass
+            return [origin.strip() for origin in v.split(",") if origin.strip()]
+        if isinstance(v, list):
+            return v
+        return ["*"]
 
     # Path Resolution
     BACKEND_DIR: Path = _BACKEND_DIR
@@ -44,6 +61,6 @@ class Settings(BaseSettings):
         "naive_bayes": "naive_bayes.pkl"
     }
 
-    model_config = SettingsConfigDict(case_sensitive=True)
+    model_config = SettingsConfigDict(case_sensitive=True, extra="ignore")
 
 settings = Settings()
